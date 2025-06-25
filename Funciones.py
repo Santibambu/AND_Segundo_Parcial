@@ -2,6 +2,16 @@ from Preguntas import *
 import random
 
 def validar_continuación(mensaje_bienvenida: str = "¿Querés seguir jugando? (S/N)", mensaje_despedida: str = "Fin del juego.") -> bool:
+    """
+    Solicita al usuario si desea continuar jugando.
+
+    Parámetros:
+        mensaje_bienvenida (str): Mensaje que se muestra al preguntar si desea continuar.
+        mensaje_despedida (str): Mensaje que se muestra al finalizar el juego.
+
+    Devuelve:
+        bool: True si el usuario desea continuar, False si no.
+    """
     continuación = input(f"\n{mensaje_bienvenida}\n\n").upper()
     if continuación not in ["S", "N"]:
         raise ValueError
@@ -13,10 +23,20 @@ def validar_continuación(mensaje_bienvenida: str = "¿Querés seguir jugando? (
     return continuación
 
 def generar_pregunta_aleatoria(preguntas: list) -> dict | bool:
+    """
+    Selecciona y muestra una pregunta aleatoria de la lista de preguntas.
+
+    Parámetros:
+        preguntas (list): Lista de preguntas disponibles.
+
+    Devuelve:
+        dict: Pregunta seleccionada si hay preguntas disponibles.
+        bool: False si no quedan preguntas.
+    """
     if preguntas:
         pregunta_aleatoria = preguntas[random.randint(0, len(preguntas) - 1)]
         preguntas.remove(pregunta_aleatoria)
-        print(f"\nPregunta:\n{pregunta_aleatoria["pregunta"]}")
+        print(f"\nPregunta:\n{pregunta_aleatoria['pregunta']}")
         respuestas = list(pregunta_aleatoria.values())
         print(f"\nOpciones:")
         for i in range(1, len(respuestas) - 1):
@@ -28,6 +48,15 @@ def generar_pregunta_aleatoria(preguntas: list) -> dict | bool:
     return resultado
 
 def escribir_respuesta() -> str:
+    """
+    Solicita al usuario que ingrese una respuesta y la valida.
+
+    Parámetros:
+        Ninguno.
+
+    Devuelve:
+        str: Letra correspondiente a la opción elegida ('a', 'b' o 'c').
+    """
     respuesta = int(input("\n"))
     match respuesta:
         case 1: respuesta = "a"
@@ -36,10 +65,31 @@ def escribir_respuesta() -> str:
         case _: raise ValueError
     return respuesta
     
-def validar_respuesta(respuesta: str, pregunta: dict) -> bool:
+def verificar_respuesta(respuesta: str, pregunta: dict) -> bool:
+    """
+    Verifica si la respuesta ingresada es correcta.
+
+    Parámetros:
+        respuesta (str): Respuesta del usuario.
+        pregunta (dict): Pregunta con la respuesta correcta.
+
+    Devuelve:
+        bool: True si la respuesta es correcta, False si no.
+    """
     return respuesta == pregunta["respuesta_correcta"]
 
 def realizar_movimiento(avanzar: bool, tablero: list, posición: int):
+    """
+    Actualiza la posición del jugador según la respuesta y el tablero.
+
+    Parámetros:
+        avanzar (bool): True si la respuesta fue correcta, False si no.
+        tablero (list): Lista que representa el tablero.
+        posición (int): Posición actual del jugador.
+
+    Devuelve:
+        int: Nueva posición del jugador.
+    """
     if avanzar == True:
         print("\nRespondiste correctamente. Avanzás una casilla.")
         posición += 1
@@ -58,6 +108,15 @@ def realizar_movimiento(avanzar: bool, tablero: list, posición: int):
     return posición
 
 def verificar_estado_del_juego(posición: int) -> bool:
+    """
+    Verifica si el juego ha terminado según la posición del jugador.
+
+    Parámetros:
+        posición (int): Posición actual del jugador.
+
+    Devuelve:
+        bool: True si el juego terminó, False si continúa.
+    """
     if posición == 0:
         print("\nCaíste en lo más profundo de la torre y te devoraron las serpientes. ¡Perdiste!\n")
         terminar = True
@@ -69,6 +128,13 @@ def verificar_estado_del_juego(posición: int) -> bool:
     return terminar
 
 def crear_tablero_puntuación(nombre: str, posición: int):
+    """
+    Guarda la puntuación del jugador en un archivo CSV.
+
+    Parámetros:
+        nombre (str): Nombre del jugador.
+        posición (int): Casilla alcanzada por el jugador.
+    """
     try:
         with open("Puntuación.csv", "r") as archivo:
             líneas = archivo.readlines()

@@ -25,7 +25,7 @@ while jugar:
                 else:
                     if respuesta_actual is None:
                         respuesta_actual = escribir_respuesta()
-                        movimiento = validar_respuesta(respuesta_actual, pregunta_actual)
+                        movimiento = verificar_respuesta(respuesta_actual, pregunta_actual)
                         posición_actual = realizar_movimiento(movimiento, TABLERO, posición_actual)
                     if verificar_estado_del_juego(posición_actual):
                         estado_juego = "fin del juego"
