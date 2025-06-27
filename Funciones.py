@@ -137,11 +137,11 @@ def crear_tablero_puntuación(nombre: str, posición: int):
     """
     try:
         with open("Puntuación.csv", "r") as archivo:
-            líneas = archivo.readlines()
+            líneas = archivo.readlines() # Intenta leer el archivo
     except FileNotFoundError:
-        líneas = []
+        líneas = [] # Si no existe, líneas pasa a ser una lista vacía
     with open("Puntuación.csv", "a") as archivo:
         if len(líneas) == 0:
-            archivo.write("jugador,puntuacion\n")
-        archivo.write(f"{nombre}, {posición}\n")
+            archivo.write("jugador,puntuacion\n") # Si está vacío, escribe la cabecera
+        archivo.write(f"{nombre}, {posición}\n") 
     print(f"¡Gracias por jugar, {nombre}! Llegaste a la casilla {posición}")
