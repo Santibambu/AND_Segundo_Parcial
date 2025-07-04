@@ -28,6 +28,10 @@ while jugar:
                         movimiento = verificar_respuesta(respuesta_actual, pregunta_actual)
                         posición_actual = realizar_movimiento(movimiento, TABLERO, posición_actual)
                     if verificar_estado_del_juego(posición_actual):
+                        if posición_actual == 0:
+                            print("\nCaíste en lo más profundo de la torre y te devoraron las serpientes. ¡Perdiste!\n")
+                        else:
+                            print("\nLograste escalar hacia la cima de la torre y sobrevivir. ¡Ganaste!\n")
                         estado_juego = "fin del juego"
                     else:
                         continuar = validar_continuación()

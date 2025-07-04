@@ -13,14 +13,11 @@ def validar_continuación(mensaje_bienvenida: str = "¿Querés seguir jugando? (
         bool: True si el usuario desea continuar, False si no.
     """
     continuación = input(f"\n{mensaje_bienvenida}\n\n").upper()
-    if continuación not in ["S", "N"]:
-        raise ValueError
-    elif continuación == "N":
-        print(f"\n{mensaje_despedida}\n")
-        continuación = False 
-    else:
-        continuación = True
-    return continuación
+    while continuación not in ["S", "N"]:
+        continuación = input("\nEl valor ingresado es incorrecto. Volvé a ingresar el valor solicitado.\n\n").upper()
+    if continuación == "N":
+        print(f"\n{mensaje_despedida}")
+    return continuación == "S"
 
 def generar_pregunta_aleatoria(preguntas: list) -> dict | bool:
     """
@@ -94,17 +91,14 @@ def realizar_movimiento(avanzar: bool, tablero: list, posición: int):
         print("\nRespondiste correctamente. Avanzás una casilla.")
         posición += 1
         if tablero[posición] != 0:
-            match tablero[posición]:
-                case 1: posición += 1; print("\n¡Encontraste una escalera! La subís y avanzás 1 casilla hacia arriba.")
-                case 2: posición += 2; print("\n¡Encontraste una escalera! La subís y avanzás 2 casillas hacia arriba.")
+            print(f"\n¡Encontraste una escalera! La subís y avanzás {tablero[posición]} casilla/s hacia arriba.")
+            posición += tablero[posición]
     else:
         print("\nRespondiste incorrectamente. Retrocedés una casilla.")
         posición -= 1
         if tablero[posición] != 0:
-            match tablero[posición]:
-                case 1: posición -= 1; print("\n¡Pisaste una serpiente! Te arrastró 1 casilla hacia abajo.")
-                case 2: posición -= 2; print("\n¡Pisaste una serpiente! Te arrastró 2 casillas hacia abajo.")
-                case 3: posición -= 3; print("\n¡Pisaste una serpiente! Te arrastró 3 casillas hacia abajo.")
+            print(f"\n¡Pisaste una serpiente! Te arrastró {tablero[posición]} casilla/s hacia abajo.")
+            posición -= tablero[posición]
     return posición
 
 def verificar_estado_del_juego(posición: int) -> bool:
@@ -117,13 +111,8 @@ def verificar_estado_del_juego(posición: int) -> bool:
     Devuelve:
         bool: True si el juego terminó, False si continúa.
     """
-    if posición == 0:
-        print("\nCaíste en lo más profundo de la torre y te devoraron las serpientes. ¡Perdiste!\n")
-        terminar = True
-    elif posición == 30:
-        print("\nLograste escalar hacia la cima de la torre y sobrevivir. ¡Ganaste!\n")
-        terminar = True
-    else:
+    terminar = True
+    if posición not in [0, 30]:
         terminar = False
     return terminar
 
