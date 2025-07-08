@@ -13,7 +13,7 @@ def validar_continuación(mensaje_bienvenida: str = "¿Querés seguir jugando? (
         bool: True si el usuario desea continuar, False si no.
     """
     continuación = input(f"\n{mensaje_bienvenida}\n\n").upper()
-    while continuación not in ["S", "N"]:
+    while continuación != "S" and continuación != "N":
         continuación = input("\nEl valor ingresado es incorrecto. Volvé a ingresar el valor solicitado.\n\n").upper()
     if continuación == "N":
         print(f"\n{mensaje_despedida}")
@@ -75,31 +75,63 @@ def verificar_respuesta(respuesta: str, pregunta: dict) -> bool:
     """
     return respuesta == pregunta["respuesta_correcta"]
 
-def realizar_movimiento(avanzar: bool, tablero: list, posición: int):
+def realizar_movimiento(avanzar: bool, tablero: list, posición: int) -> int:
     """
-    Actualiza la posición del jugador según la respuesta y el tablero.
+    Actualiza la posición del jugador según la respuesta y los efectos del tablero.
+    """
+    if avanzar:
+        print("\nRespondiste correctamente. Avanzás una casilla.")
+        posición += 1
+        posición = aplicar_movimientos_extra(posición, tablero, "\n¡Encontraste una escalera! La subís y avanzás {} casilla/s hacia arriba.", sumar)
+    else:
+        print("\nRespondiste incorrectamente. Retrocedés una casilla.")
+        posición -= 1
+        posición = aplicar_movimientos_extra(posición, tablero, "\n¡Pisaste una serpiente! Te arrastró {} casilla/s hacia abajo.", restar)
+    return posición
+
+def aplicar_movimientos_extra(posición: int, tablero: list, mensaje: str, operación: callable) -> int:
+    """
+    Aplica el objeto del tablero (escalera o serpiente) si corresponde.
 
     Parámetros:
-        avanzar (bool): True si la respuesta fue correcta, False si no.
-        tablero (list): Lista que representa el tablero.
         posición (int): Posición actual del jugador.
+        tablero (list): Lista que representa el tablero.
+        mensaje (str): Mensaje a mostrar si hay efecto.
+        operación (callable): Suma o resta, según el efecto.
 
     Devuelve:
         int: Nueva posición del jugador.
     """
-    if avanzar == True:
-        print("\nRespondiste correctamente. Avanzás una casilla.")
-        posición += 1
-        if tablero[posición] != 0:
-            print(f"\n¡Encontraste una escalera! La subís y avanzás {tablero[posición]} casilla/s hacia arriba.")
-            posición += tablero[posición]
-    else:
-        print("\nRespondiste incorrectamente. Retrocedés una casilla.")
-        posición -= 1
-        if tablero[posición] != 0:
-            print(f"\n¡Pisaste una serpiente! Te arrastró {tablero[posición]} casilla/s hacia abajo.")
-            posición -= tablero[posición]
+    if tablero[posición] != 0:
+        print(mensaje.format(tablero[posición]))
+        posición = operación(posición, tablero[posición])
     return posición
+
+def sumar(número: int, cantidad: int) -> int:
+    """
+    Suma dos números enteros.
+
+    Parámetros:
+        número (int): Primer número.
+        cantidad (int): Número a sumar.
+
+    Devuelve:
+        int: Resultado de la suma.
+    """
+    return número + cantidad
+
+def restar(número: int, cantidad: int) -> int:
+    """
+    Resta dos números enteros.
+
+    Parámetros:
+        número (int): Primer número.
+        cantidad (int): Número a restar.
+
+    Devuelve:
+        int: Resultado de la resta.
+    """
+    return número - cantidad
 
 def verificar_estado_del_juego(posición: int) -> bool:
     """
@@ -111,9 +143,9 @@ def verificar_estado_del_juego(posición: int) -> bool:
     Devuelve:
         bool: True si el juego terminó, False si continúa.
     """
-    terminar = True
-    if posición not in [0, 30]:
-        terminar = False
+    terminar = False
+    if posición == 0 or posición == 30:
+        terminar = True
     return terminar
 
 def crear_tablero_puntuación(nombre: str, posición: int):
